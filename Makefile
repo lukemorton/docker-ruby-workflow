@@ -33,10 +33,13 @@ release/build-image:
 release/push-image:
 	gcloud docker -- push $(REGISTRY_URL)
 
-deploy: deploy/get-cluster-creds deploy/set-image
+deploy: deploy/set-default-project deploy/get-cluster-creds deploy/set-image
 
 deploy/set-image:
 	kubectl set image deployment/$(APP) $(APP)=$(REGISTRY_URL)
+
+deploy/set-default-project:
+	gcloud config set project $(PROJECT)
 
 deploy/get-cluster-creds:
 	gcloud container clusters get-credentials $(CLUSTER)
@@ -44,6 +47,6 @@ deploy/get-cluster-creds:
 deploy/create-cluster:
 	gcloud container clusters create $(CLUSTER)
 
-deploy_from_scratch: deploy/create-cluster deploy/build-image deploy/push-image
+deploy_from_scratch: deploy/set-default-project deploy/create-cluster deploy/build-image deploy/push-image
 	kubectl run $(APP) --image=$(REGISTRY_URL) --port 8080 --replicas=3
 	kubectl expose deployment $(APP) --type=LoadBalancer --port 80 --target-port 8080

@@ -1,0 +1,59 @@
+version: 2
+jobs:
+  build_and_test:
+    working_directory: ~/app
+    docker:
+      - image: circleci/ruby:2.4.3
+        environment:
+          - RAILS_ENV: test
+          - DATABASE_HOST: 127.0.0.1
+          - DATABASE_USER: postgres
+          - DATABASE_PASSWORD: postgres
+
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          - POSTGRES_USER: postgres
+          - POSTGRES_PASSWORD: postgres
+          - POSTGRES_DB: watg_test
+    steps:
+      - checkout
+
+      # Restore bundle cache
+      - type: cache-restore
+        key: bundle-{{ checksum "Gemfile.lock" }}
+
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Store bundle cache
+      - type: cache-save
+        key: bundle-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - run: echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+      - run: gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+      - run: make release
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              ignore: master
+  cd:
+    jobs:
+      - build_and_test:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          filters:
+            branches:
+              only: master
