@@ -1,0 +1,33 @@
+version: '2'
+services:
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '15432:5432'
+
+  web:
+    image: ruby:2.4.3-alpine3.7
+    working_dir: /app
+    command: ash
+    depends_on:
+      - db
+    environment:
+      BUNDLE_PATH: /bundle
+      BUNDLE_SILENCE_ROOT_WARNING: "true"
+      HISTFILE: /app/.bash_history
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    volumes_from:
+      - bundle
+
+  bundle:
+    image: busybox
+    volumes:
+      - /bundle
