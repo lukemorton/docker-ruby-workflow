@@ -22,8 +22,8 @@ shell:
 release: release/create-git-tag release/build-image release/push-image deploy
 
 release/create-git-tag:
-	git diff --exit-code && $(error You must commit files first)
-	git diff-index --quiet --cached HEAD && $(error You must commit files first)
+	git diff --exit-code
+	git diff-index --quiet --cached HEAD
 	git tag $(VERSION)
 	git push origin $(VERSION)
 
