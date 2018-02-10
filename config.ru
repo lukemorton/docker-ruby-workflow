@@ -1,1 +1,1 @@
-run Proc.new { |env| [200, {}, ['Hello world 5.2']] }
+run Proc.new { |env| [200, {}, ['Hello world 5.7']] }

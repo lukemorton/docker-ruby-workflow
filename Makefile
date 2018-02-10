@@ -2,7 +2,6 @@ PROJECT := doorman-1200
 CLUSTER := cluster-2
 DOCKER_S2I_IMAGE := centos/ruby-24-centos7
 APP := ruby-sample-app
-VERSION := v5
 REGISTRY_URL := gcr.io/$(PROJECT)/$(APP):$(VERSION)
 
 start:
@@ -20,19 +19,21 @@ clean:
 shell:
 	docker-compose run --rm --service-ports web
 
-release: release/create-git-tag deploy
+release: release/create-git-tag release/build-image release/push-image deploy
 
 release/create-git-tag:
+	git diff --exit-code || $(error You must commit files first)
+	git diff-index --quiet --cached HEAD || $(error You must commit files first)
 	git tag $(VERSION)
 	git push origin $(VERSION)
 
-deploy: deploy/get-cluster-creds deploy/build-image deploy/push-image deploy/set-image
-
-deploy/build-image:
+release/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(REGISTRY_URL)
 
-deploy/push-image:
+release/push-image:
 	gcloud docker -- push $(REGISTRY_URL)
+
+deploy: deploy/get-cluster-creds deploy/set-image
 
 deploy/set-image:
 	kubectl set image deployment/$(APP) $(APP)=$(REGISTRY_URL)
