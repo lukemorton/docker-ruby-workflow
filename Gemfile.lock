@@ -1,13 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    pg (1.0.0)
     rack (2.0.4)
+    sequel (5.5.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  pg
   rack
+  sequel
 
 BUNDLED WITH
    1.16.1
