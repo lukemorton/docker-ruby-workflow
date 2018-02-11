@@ -19,21 +19,19 @@ clean:
 shell:
 	docker-compose run --rm --service-ports web
 
-release: release/create-git-tag release/build-image release/push-image deploy
-
-release/create-git-tag:
+release:
 	git diff --exit-code
 	git diff-index --quiet --cached HEAD
 	git tag $(VERSION)
 	git push origin $(VERSION)
 
-release/build-image:
+deploy: deploy/build-image deploy/push-image deploy/set-default-project deploy/get-cluster-creds deploy/set-image
+
+deploy/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(REGISTRY_URL)
 
-release/push-image:
+deploy/push-image:
 	gcloud docker -- push $(REGISTRY_URL)
-
-deploy: deploy/set-default-project deploy/get-cluster-creds deploy/set-image
 
 deploy/set-image:
 	kubectl set image deployment/$(APP) $(APP)=$(REGISTRY_URL)
