@@ -49,19 +49,12 @@ workflows:
   version: 2
   ci:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-              ignore: master
+      - build_and_test
   cd:
     jobs:
-      - build_and_test:
-          filters:
-            branches:
-              only: master
       - deploy:
           requires:
             - build_and_test
           filters:
-            branches:
-              only: master
+            tags:
+              only: /^v.*/
