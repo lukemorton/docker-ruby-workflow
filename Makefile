@@ -23,7 +23,7 @@ release:
 	git diff --exit-code
 	git diff-index --quiet --cached HEAD
 	git tag $(VERSION)
-	git push origin $(VERSION)
+	git push origin master $(VERSION)
 
 deploy: deploy/build-image deploy/push-image deploy/set-default-project deploy/get-cluster-creds deploy/set-image
 
