@@ -39,7 +39,7 @@ jobs:
       - run: echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
       - run: gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
       - run: apt-get install make
-      - run: make release
+      - run: make deploy
 
 workflows:
   version: 2
