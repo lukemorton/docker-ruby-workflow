@@ -38,7 +38,7 @@ jobs:
       - checkout
       - run: echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
       - run: gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-      - run: apt-get install make
+      - run: apt-get install make wget
       - run: wget https://github.com/openshift/source-to-image/releases/download/v1.1.8/source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
       - run: tar -xvf source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
       - run: cp s2i /usr/local/bin
