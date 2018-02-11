@@ -10,4 +10,4 @@ Sequel.connect(
   logger: Logger.new('db.log')
 )
 
-run Proc.new { |env| [200, {}, ['Hello world 5.7']] }
+run Proc.new { |env| [200, {}, ['Hello world 5.25']] }
