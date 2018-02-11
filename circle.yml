@@ -47,11 +47,9 @@ jobs:
 
 workflows:
   version: 2
-  ci:
-    jobs:
-      - build_and_test
   cd:
     jobs:
+      - build_and_test
       - deploy:
           requires:
             - build_and_test
