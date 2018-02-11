@@ -43,7 +43,8 @@ jobs:
       - run: tar -xvf source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
       - run: cp s2i /usr/local/bin
       - setup_remote_docker
-      - run: make deploy RELEASE=`git describe --tags`
+      - run: export RELEASE=`git describe --tags`
+      - run: make deploy
 
 workflows:
   version: 2
