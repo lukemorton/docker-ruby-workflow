@@ -40,7 +40,7 @@ deploy/set-default-project:
 	gcloud config set project $(PROJECT)
 
 deploy/get-cluster-creds:
-	gcloud container clusters get-credentials $(CLUSTER)
+	gcloud container clusters get-credentials --zone europe-west2 $(CLUSTER)
 
 deploy/create-cluster:
 	gcloud container clusters create $(CLUSTER)
