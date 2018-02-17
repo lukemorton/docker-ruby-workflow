@@ -63,10 +63,11 @@ workflows:
   cd:
     jobs:
       - build_and_test
-      - publish
-      - deploy_staging:
+      - publish:
           requires:
             - build_and_test
+      - deploy_staging:
+          requires:
             - publish
           filters:
             tags:
