@@ -37,6 +37,7 @@ helm/init:
 	helm init
 
 helm/deploy:
+	helm init --client-only
 	helm dep update charts/web-app
 	helm upgrade $(APP)-$(APP_ENV) charts/web-app \
 		--install \
