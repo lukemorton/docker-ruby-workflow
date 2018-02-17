@@ -27,9 +27,11 @@ release:
 	git tag $(VERSION)
 	git push origin master $(VERSION)
 
+publish: gcloud/set-default-project gcloud/get-cluster-creds s2i/build-image gcloud/push-image
+
 infra: gcloud/set-default-project gcloud/create-cluster helm/init
 
-deploy: gcloud/set-default-project gcloud/get-cluster-creds s2i/build-image gcloud/push-image helm/deploy
+deploy: gcloud/set-default-project gcloud/get-cluster-creds helm/deploy
 
 helm/init:
 	helm init
