@@ -45,12 +45,17 @@ jobs:
       - run: make publish VERSION=$(git describe --tags)
 
   deploy_staging:
-    docker:
-    - image: google/cloud-sdk
+    machine: true
     steps:
     - checkout
     - run: apt-get install -y make wget
+    - type: cache-restore
+      key: deploy-deps
     - run: make ci
+    - type: cache-save
+      key: deploy-deps
+      paths:
+        - .ci
     - run: make deploy VERSION=$(git describe --tags) APP_ENV=staging
 
   deploy_production:
@@ -59,7 +64,13 @@ jobs:
     steps:
     - checkout
     - run: apt-get install -y make wget
+    - type: cache-restore
+      key: deploy-deps
     - run: make ci
+    - type: cache-save
+      key: deploy-deps
+      paths:
+        - .ci
     - run: make deploy VERSION=$(git describe --tags) APP_ENV=production
 
 workflows:
