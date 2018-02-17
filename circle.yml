@@ -35,6 +35,7 @@ jobs:
     - image: circleci/golang:latest
     steps:
       - checkout
+      - run: echo ${GOOGLE_AUTH} > gcp-key.json
       - type: cache-restore
         key: deploy-deps
       - run: make ci
@@ -53,6 +54,7 @@ jobs:
     - image: circleci/golang:latest
     steps:
     - checkout
+    - run: echo ${GOOGLE_AUTH} > gcp-key.json
     - type: cache-restore
       key: deploy-deps
     - run: make ci
@@ -67,6 +69,7 @@ jobs:
     - image: circleci/golang:latest
     steps:
     - checkout
+    - run: echo ${GOOGLE_AUTH} > gcp-key.json
     - type: cache-restore
       key: deploy-deps
     - run: make ci
