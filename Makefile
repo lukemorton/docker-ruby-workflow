@@ -59,3 +59,19 @@ gcloud/push-image:
 
 s2i/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)
+
+ci: .ci
+
+.ci:
+	mkdir -p .ci
+
+ci/gcp-key.json:
+	echo ${GOOGLE_AUTH} > ci/gcp-key.json
+
+ci/helm:
+	wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
+	tar -xvf helm-v2.8.1-linux-386.tar.gz
+	cp linux-386/helm helm
+
+ci/auth: ci/gcp-key.json
+	gcloud auth activate-service-account --key-file gcp-key.json
