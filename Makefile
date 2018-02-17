@@ -73,8 +73,8 @@ ci: .ci .ci/gcp-key.json .ci/google-cloud-sdk .ci/linux-386/helm
 
 .ci/google-cloud-sdk:
 	cd .ci && wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-189.0.0-linux-x86.tar.gz
-	tar -xf .ci/google-cloud-sdk-189.0.0-linux-x86.tar.gz
+	cd .ci && tar -xf google-cloud-sdk-189.0.0-linux-x86.tar.gz
 
 .ci/linux-386/helm:
 	cd .ci && wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
-	tar -xf .ci/helm-v2.8.1-linux-386.tar.gz
+	cd .ci && tar -xf helm-v2.8.1-linux-386.tar.gz
