@@ -32,48 +32,30 @@ jobs:
 
   publish:
     docker:
-    - image: circleci/golang:latest
+    - image: lukemorton/web-deployer-tools:latest
     steps:
       - checkout
       - run: echo ${GOOGLE_AUTH} > gcp-key.json
-      - type: cache-restore
-        key: deploy-deps-v1.1
-      - run: make ci
-      - type: cache-save
-        key: deploy-deps-v1.1
-        paths:
-          - .ci
+      - run: gcloud auth activate-service-account --key-file gcp-key.json
       - setup_remote_docker
       - run: make publish VERSION=$(git describe --tags)
 
   deploy_staging:
     docker:
-    - image: circleci/golang:latest
+    - image: lukemorton/web-deployer-tools:latest
     steps:
     - checkout
     - run: echo ${GOOGLE_AUTH} > gcp-key.json
-    - type: cache-restore
-      key: deploy-deps-v1.1
-    - run: make ci
-    - type: cache-save
-      key: deploy-deps-v1.1
-      paths:
-        - .ci
+    - run: gcloud auth activate-service-account --key-file gcp-key.json
     - run: make deploy VERSION=$(git describe --tags) APP_ENV=staging
 
   deploy_production:
     docker:
-    - image: circleci/golang:latest
+    - image: lukemorton/web-deployer-tools:latest
     steps:
     - checkout
     - run: echo ${GOOGLE_AUTH} > gcp-key.json
-    - type: cache-restore
-      key: deploy-deps-v1.1
-    - run: make ci
-    - type: cache-save
-      key: deploy-deps-v1.1
-      paths:
-        - .ci
+    - run: gcloud auth activate-service-account --key-file gcp-key.json
     - run: make deploy VERSION=$(git describe --tags) APP_ENV=production
 
 workflows:
