@@ -60,8 +60,8 @@ gcloud/push-image:
 s2i/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)
 
-ci: .ci .ci/gcp-key.json .ci/gcloud .ci/helm
-	sudo cp .ci/gcloud /usr/local/bin
+ci: .ci .ci/gcp-key.json .ci/google-cloud-sdk .ci/linux-386/helm
+	sudo ./.ci/google-cloud-sdk/install.sh
 	sudo cp .ci/helm /usr/local/bin
 	gcloud auth activate-service-account --key-file .ci/gcp-key.json
 	gcloud components install kubectl
@@ -72,12 +72,10 @@ ci: .ci .ci/gcp-key.json .ci/gcloud .ci/helm
 .ci/gcp-key.json:
 	echo ${GOOGLE_AUTH} > .ci/gcp-key.json
 
-.ci/gcloud:
+.ci/google-cloud-sdk:
 	wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-189.0.0-linux-x86.tar.gz
 	tar -xf google-cloud-sdk-189.0.0-linux-x86.tar.gz
-	cp google-cloud-sdk/bin/gcloud .ci/gcloud
 
-.ci/helm:
+.ci/linux-386/helm:
 	wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
 	tar -xf helm-v2.8.1-linux-386.tar.gz
-	cp linux-386/helm .ci/helm
