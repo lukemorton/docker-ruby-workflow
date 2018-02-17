@@ -45,7 +45,7 @@ jobs:
           - .ci
       - run: wget https://github.com/openshift/source-to-image/releases/download/v1.1.8/source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
       - run: tar -xf source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
-      - run: cp s2i /usr/local/bin
+      - run: sudo cp s2i /usr/local/bin
       - setup_remote_docker
       - run: make publish VERSION=$(git describe --tags)
 
