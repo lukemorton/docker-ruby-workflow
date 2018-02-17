@@ -1,8 +1,10 @@
 PROJECT := doorman-1200
-CLUSTER := cluster-2
+CLUSTER := ruby-sample-app-cluster
 DOCKER_S2I_IMAGE := centos/ruby-24-centos7
 APP := ruby-sample-app
-REGISTRY_URL := gcr.io/$(PROJECT)/$(APP):$(VERSION)
+APP_ENV := prod
+IMAGE_REPO := gcr.io/$(PROJECT)/$(APP)
+VERSIONED_IMAGE_REPO := $(IMAGE_REPO):$(VERSION)
 
 start:
 	docker-compose build
@@ -25,26 +27,32 @@ release:
 	git tag $(VERSION)
 	git push origin master $(VERSION)
 
-deploy: deploy/build-image deploy/push-image deploy/set-default-project deploy/get-cluster-creds deploy/set-image
+infra: gcloud/set-default-project gcloud/create-cluster helm/init
 
-deploy/build-image:
-	s2i build . $(DOCKER_S2I_IMAGE) $(REGISTRY_URL)
+deploy: gcloud/set-default-project gcloud/get-cluster-creds s2i/build-image gcloud/push-image helm/deploy
 
-deploy/push-image:
-	gcloud docker -- push $(REGISTRY_URL)
+helm/init:
+	helm init
 
-deploy/set-image:
-	kubectl set image deployment/$(APP) $(APP)=$(REGISTRY_URL)
+helm/deploy:
+	helm dep update charts/web-app
+	helm upgrade $(APP)-$(APP_ENV) charts/web-app \
+		--install \
+		--set image.repository=$(IMAGE_REPO) \
+		--set image.tag=$(VERSION) \
+		--set ingress.hosts={$(APP)-$(APP_ENV).local}
 
-deploy/set-default-project:
+gcloud/set-default-project:
 	gcloud config set project $(PROJECT)
 
-deploy/get-cluster-creds:
-	gcloud container clusters get-credentials --zone europe-west2-a $(CLUSTER)
-
-deploy/create-cluster:
+gcloud/create-cluster:
 	gcloud container clusters create $(CLUSTER)
 
-deploy_from_scratch: deploy/set-default-project deploy/create-cluster deploy/build-image deploy/push-image
-	kubectl run $(APP) --image=$(REGISTRY_URL) --port 8080 --replicas=3
-	kubectl expose deployment $(APP) --type=LoadBalancer --port 80 --target-port 8080
+gcloud/get-cluster-creds:
+	gcloud container clusters get-credentials --zone europe-west2-a $(CLUSTER)
+
+gcloud/push-image:
+	gcloud docker -- push $(VERSIONED_IMAGE_REPO)
+
+s2i/build-image:
+	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)

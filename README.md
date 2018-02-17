@@ -10,6 +10,7 @@ This is all about #NoOps.
  - s2i (`brew install source-to-image`)
  - gcloud (`brew install caskroom/cask/google-cloud-sdk`)
  - kubectl (`brew install kubectl`)
+ - helm (`brew install kubernetes-helm`)
  - Make
 
 ## Quickstart
