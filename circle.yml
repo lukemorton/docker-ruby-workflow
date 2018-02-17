@@ -46,7 +46,7 @@ jobs:
 
   deploy_staging:
     docker:
-    - image: circleci/go:latest
+    - image: circleci/golang:latest
     steps:
     - checkout
     - run: apt-get install -y make wget
@@ -61,7 +61,7 @@ jobs:
 
   deploy_production:
     docker:
-    - image: circleci/go:latest
+    - image: circleci/golang:latest
     steps:
     - checkout
     - run: apt-get install -y make wget
