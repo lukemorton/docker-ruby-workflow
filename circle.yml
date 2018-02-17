@@ -54,7 +54,7 @@ jobs:
     - run: apt-get install -y make wget
     - run: wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
     - run: tar -xvf helm-v2.8.1-linux-386.tar.gz
-    - run: cp helm /usr/local/bin
+    - run: cp linux-386/helm /usr/local/bin
     - setup_remote_docker
     - run: make deploy VERSION=$(git describe --tags)
 
