@@ -60,10 +60,11 @@ gcloud/push-image:
 s2i/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)
 
-ci: .ci .ci/google-cloud-sdk .ci/linux-386/helm
+ci: .ci .ci/google-cloud-sdk .ci/linux-386/helm .ci/s2i
 	sudo ln -s $(PWD)/.ci/google-cloud-sdk/bin/gcloud /usr/local/bin
 	sudo ln -s $(PWD)/.ci/google-cloud-sdk/bin/kubectl /usr/local/bin
 	sudo cp .ci/linux-386/helm /usr/local/bin
+	sudo cp .ci/s2i /usr/local/bin
 	gcloud auth activate-service-account --key-file gcp-key.json
 
 .ci:
@@ -77,3 +78,7 @@ ci: .ci .ci/google-cloud-sdk .ci/linux-386/helm
 .ci/linux-386/helm:
 	cd .ci && wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
 	cd .ci && tar -xf helm-v2.8.1-linux-386.tar.gz
+
+.ci/s2i:
+	cd .ci && wget https://github.com/openshift/source-to-image/releases/download/v1.1.8/source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
+	cd .ci && tar -xf source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
