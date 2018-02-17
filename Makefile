@@ -60,7 +60,7 @@ gcloud/push-image:
 s2i/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)
 
-ci: .ci .ci/google-cloud-sdk .ci/linux-386/helm .ci/s2i
+ci: .ci .ci/google-cloud-sdk .ci/linux-386/helm
 	sudo ln -s $(PWD)/.ci/google-cloud-sdk/bin/gcloud /usr/local/bin
 	sudo ln -s $(PWD)/.ci/google-cloud-sdk/bin/kubectl /usr/local/bin
 	sudo cp .ci/linux-386/helm /usr/local/bin
