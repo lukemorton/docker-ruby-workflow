@@ -56,7 +56,7 @@ jobs:
     - run: tar -xvf helm-v2.8.1-linux-386.tar.gz
     - run: cp linux-386/helm /usr/local/bin
     - setup_remote_docker
-    - run: make deploy VERSION=$(git describe --tags)
+    - run: make deploy VERSION=$(git describe --tags) APP_ENV=staging
 
 workflows:
   version: 2
