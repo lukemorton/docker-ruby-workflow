@@ -61,8 +61,8 @@ s2i/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)
 
 ci: .ci .ci/gcp-key.json .ci/gcloud .ci/helm
-	cp .ci/gcloud /usr/local/bin
-	cp .ci/helm /usr/local/bin
+	sudo cp .ci/gcloud /usr/local/bin
+	sudo cp .ci/helm /usr/local/bin
 	gcloud auth activate-service-account --key-file .ci/gcp-key.json
 	gcloud components install kubectl
 
