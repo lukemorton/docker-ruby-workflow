@@ -55,7 +55,6 @@ jobs:
     - run: wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
     - run: tar -xvf helm-v2.8.1-linux-386.tar.gz
     - run: cp linux-386/helm /usr/local/bin
-    - setup_remote_docker
     - run: make deploy VERSION=$(git describe --tags) APP_ENV=staging
 
   deploy_production:
@@ -69,7 +68,6 @@ jobs:
     - run: wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
     - run: tar -xvf helm-v2.8.1-linux-386.tar.gz
     - run: cp linux-386/helm /usr/local/bin
-    - setup_remote_docker
     - run: make deploy VERSION=$(git describe --tags) APP_ENV=production
 
 workflows:
@@ -90,6 +88,6 @@ workflows:
           type: approval
           requires:
            - deploy_staging
-      - deploy_production:
+      - deploy_staging:
           requires:
             - review
