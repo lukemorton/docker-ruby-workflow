@@ -32,12 +32,16 @@ jobs:
 
   publish:
     docker:
-      - image: google/cloud-sdk
+    - image: circleci/golang:latest
     steps:
       - checkout
-      - run: echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
-      - run: gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-      - run: apt-get install -y make wget
+      - type: cache-restore
+        key: deploy-deps
+      - run: make ci
+      - type: cache-save
+        key: deploy-deps
+        paths:
+          - .ci
       - run: wget https://github.com/openshift/source-to-image/releases/download/v1.1.8/source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
       - run: tar -xvf source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
       - run: cp s2i /usr/local/bin
@@ -49,7 +53,6 @@ jobs:
     - image: circleci/golang:latest
     steps:
     - checkout
-    - run: apt-get install -y make wget
     - type: cache-restore
       key: deploy-deps
     - run: make ci
@@ -64,7 +67,6 @@ jobs:
     - image: circleci/golang:latest
     steps:
     - checkout
-    - run: apt-get install -y make wget
     - type: cache-restore
       key: deploy-deps
     - run: make ci
