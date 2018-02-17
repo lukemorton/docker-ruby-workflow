@@ -2,7 +2,7 @@ PROJECT := doorman-1200
 CLUSTER := ruby-sample-app-cluster
 DOCKER_S2I_IMAGE := centos/ruby-24-centos7
 APP := ruby-sample-app
-APP_ENV := prod
+APP_ENV := production
 IMAGE_REPO := gcr.io/$(PROJECT)/$(APP)
 VERSIONED_IMAGE_REPO := $(IMAGE_REPO):$(VERSION)
 
