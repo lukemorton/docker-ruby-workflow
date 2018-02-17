@@ -45,7 +45,8 @@ jobs:
       - run: make publish VERSION=$(git describe --tags)
 
   deploy_staging:
-    machine: true
+    docker:
+    - image: circleci/go:latest
     steps:
     - checkout
     - run: apt-get install -y make wget
@@ -60,7 +61,7 @@ jobs:
 
   deploy_production:
     docker:
-    - image: google/cloud-sdk
+    - image: circleci/go:latest
     steps:
     - checkout
     - run: apt-get install -y make wget
