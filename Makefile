@@ -70,7 +70,7 @@ ci: .ci .ci/gcp-key.json .ci/google-cloud-sdk .ci/linux-386/helm
 	mkdir -p .ci
 
 .ci/gcp-key.json:
-	echo ${GOOGLE_AUTH} > .ci/gcp-key.json
+	echo $(GOOGLE_AUTH) > .ci/gcp-key.json
 
 .ci/google-cloud-sdk:
 	cd .ci && wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-189.0.0-linux-x86.tar.gz
