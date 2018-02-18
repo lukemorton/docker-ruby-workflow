@@ -3,6 +3,7 @@ CLUSTER := ruby-sample-app-cluster
 DOCKER_S2I_IMAGE := centos/ruby-24-centos7
 APP := ruby-sample-app
 APP_ENV := production
+CHART := http://web-deployer-charts.storage.googleapis.com/web-app-0.1.0.tgz
 IMAGE_REPO := gcr.io/$(PROJECT)/$(APP)
 VERSIONED_IMAGE_REPO := $(IMAGE_REPO):$(VERSION)
 
@@ -38,8 +39,7 @@ helm/init:
 
 helm/deploy:
 	helm init --client-only
-	helm dep update charts/web-app
-	helm upgrade $(APP)-$(APP_ENV) charts/web-app \
+	helm upgrade $(APP)-$(APP_ENV) $(CHART) \
 		--install \
 		--set image.repository=$(IMAGE_REPO) \
 		--set image.tag=$(VERSION) \
