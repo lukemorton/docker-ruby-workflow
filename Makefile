@@ -27,11 +27,11 @@ release:
 	git tag $(VERSION)
 	git push origin master $(VERSION)
 
-publish: gcloud/set-default-project gcloud/get-cluster-creds s2i/build-image gcloud/push-image
+publish: gcloud/get-cluster-creds s2i/build-image gcloud/push-image
 
-infra: gcloud/set-default-project gcloud/create-cluster helm/init
+infra: gcloud/create-cluster helm/init
 
-deploy: gcloud/set-default-project gcloud/get-cluster-creds helm/deploy
+deploy: gcloud/get-cluster-creds helm/deploy
 
 helm/init:
 	helm init
@@ -45,40 +45,14 @@ helm/deploy:
 		--set image.tag=$(VERSION) \
 		--set ingress.hosts={$(APP)-$(APP_ENV).local}
 
-gcloud/set-default-project:
-	gcloud config set project $(PROJECT)
-
 gcloud/create-cluster:
 	gcloud container clusters create $(CLUSTER)
 
 gcloud/get-cluster-creds:
-	gcloud container clusters get-credentials --zone europe-west2-a $(CLUSTER)
+	gcloud container clusters get-credentials --project $(PROJECT) --zone europe-west2-a $(CLUSTER)
 
 gcloud/push-image:
 	gcloud docker -- push $(VERSIONED_IMAGE_REPO)
 
 s2i/build-image:
 	s2i build . $(DOCKER_S2I_IMAGE) $(VERSIONED_IMAGE_REPO)
-
-ci: .ci .ci/google-cloud-sdk .ci/linux-386/helm .ci/s2i
-	sudo ln -s $(PWD)/.ci/google-cloud-sdk/bin/gcloud /usr/local/bin
-	sudo ln -s $(PWD)/.ci/google-cloud-sdk/bin/kubectl /usr/local/bin
-	sudo cp .ci/linux-386/helm /usr/local/bin
-	sudo cp .ci/s2i /usr/local/bin
-	gcloud auth activate-service-account --key-file gcp-key.json
-
-.ci:
-	mkdir -p .ci
-
-.ci/google-cloud-sdk:
-	cd .ci && wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-189.0.0-linux-x86.tar.gz
-	cd .ci && tar -xf google-cloud-sdk-189.0.0-linux-x86.tar.gz
-	./.ci/google-cloud-sdk/install.sh -q --additional-components kubectl
-
-.ci/linux-386/helm:
-	cd .ci && wget https://kubernetes-helm.storage.googleapis.com/helm-v2.8.1-linux-386.tar.gz
-	cd .ci && tar -xf helm-v2.8.1-linux-386.tar.gz
-
-.ci/s2i:
-	cd .ci && wget https://github.com/openshift/source-to-image/releases/download/v1.1.8/source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
-	cd .ci && tar -xf source-to-image-v1.1.8-e3140d01-linux-386.tar.gz
