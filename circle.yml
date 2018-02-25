@@ -37,8 +37,10 @@ jobs:
     - checkout
     - run: echo ${GOOGLE_AUTH} > gcp-key.json
     - run: gcloud auth activate-service-account --key-file gcp-key.json
+    - run: gcloud auth configure-docker
     - setup_remote_docker
-    - run: make publish deploy VERSION=$(git describe --tags) APP_ENV=staging
+    - run: web-deployer publish staging $(git describe --tags)
+    - run: web-deployer deploy staging $(git describe --tags)
 
   deploy_production:
     docker:
