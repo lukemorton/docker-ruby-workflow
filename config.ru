@@ -10,4 +10,4 @@ require 'sequel'
 #   logger: Logger.new('db.log')
 # )
 
-run Proc.new { |env| [200, {}, ['This is a new update']] }
+run Proc.new { |env| [200, {}, ['This is a new update!']] }
